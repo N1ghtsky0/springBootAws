@@ -66,4 +66,31 @@ public class PostsRepositoryTest {
         assertThat(posts.getCreatedDate()).isAfter(now);
         assertThat(posts.getModifiedDate()).isAfter(now);
     }
+
+    @Test
+    public void Posts_삭제완료() {
+        // given
+        Posts deletePost = postsRepository.save(Posts.builder()
+                .title("title1")
+                .content("content1")
+                .author("author1")
+                .build());
+
+        String expectedTitle = "title2";
+        String expectedContent = "content2";
+
+        postsRepository.save(Posts.builder()
+                .title(expectedTitle)
+                .content(expectedContent)
+                .author("author2")
+                .build());
+
+        // when
+        postsRepository.delete(deletePost);
+        List<Posts> postsList = postsRepository.findAll();
+
+        // when
+        assertThat(postsList.get(0).getTitle()).isEqualTo(expectedTitle);
+        assertThat(postsList.get(0).getContent()).isEqualTo(expectedContent);
+    }
 }
